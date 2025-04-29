@@ -1,0 +1,261 @@
+import heapq
+
+# Step 1: A* Algorithm Implementation
+def a_star(graph, heuristics, start, goal):
+    # Priority queue for A* (f = g + h)
+    open_set = []
+    heapq.heappush(open_set, (0 + heuristics[start], 0, start))  # (f, g, node)
+    
+    # g_costs: the actual cost to reach each node
+    g_costs = {start: 0}
+    
+    # came_from: dictionary to reconstruct the path
+    came_from = {}
+    
+    while open_set:
+        _, g, current = heapq.heappop(open_set)
+        
+        # If we reached the goal, reconstruct the path
+        if current == goal:
+            print("Goal reached!")
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+            print("Path:", " -> ".join(path))
+            return
+        
+        # Explore neighbors
+        for neighbor, weight in graph.get(current, []):
+            tentative_g = g + weight
+            
+            if neighbor not in g_costs or tentative_g < g_costs[neighbor]:
+                g_costs[neighbor] = tentative_g
+                f_cost = tentative_g + heuristics.get(neighbor, float('inf'))
+                heapq.heappush(open_set, (f_cost, tentative_g, neighbor))
+                came_from[neighbor] = current
+    
+    print("Goal not reachable.")
+
+# Step 2: Function to take graph input from the user
+def read_graph_from_user():
+    graph = {}
+    print("Enter the edges of the graph in the format 'Source Destination Weight'. Type 'done' when finished.")
+    while True:
+        edge = input("Enter edge: ")
+        if edge.lower() == 'done':
+            break
+        source, destination, weight = edge.split()
+        weight = int(weight)
+        
+        if source not in graph:
+            graph[source] = []
+        if destination not in graph:
+            graph[destination] = []
+        
+        graph[source].append((destination, weight))
+        graph[destination].append((source, weight))  # For undirected graph
+    
+    return graph
+
+# Step 3: Function to take heuristic values input from the user
+def read_heuristics_from_user():
+    heuristics = {}
+    print("Enter the heuristic values in the format 'Node Heuristic'. Type 'done' when finished.")
+    while True:
+        heuristic = input("Enter heuristic: ")
+        if heuristic.lower() == 'done':
+            break
+        node, h_value = heuristic.split()
+        heuristics[node] = int(h_value)
+    
+    return heuristics
+
+# Step 4: Main Execution
+graph = read_graph_from_user()
+heuristics = read_heuristics_from_user()
+
+print("\nGraph:", graph)
+print("Heuristics:", heuristics)
+
+# Input start and goal nodes
+start_node = input("\nEnter the starting node: ")
+goal_node = input("Enter the goal node: ")
+
+# Run A* algorithm
+print("\nA* Search Traversal:")
+a_star(graph, heuristics, start_node, goal_node)
+
+Enter the edges of the graph in the format 'Source Destination Weight'. Type 'done' when finished.
+Enter edge: A B 2
+Enter edge: A C 1
+Enter edge: B D 3
+Enter edge: C D 1
+Enter edge: D E 5
+Enter edge: done
+
+Enter the heuristic values in the format 'Node Heuristic'. Type 'done' when finished.
+Enter heuristic: A 6
+Enter heuristic: B 4
+Enter heuristic: C 3
+Enter heuristic: D 2
+Enter heuristic: E 0
+Enter heuristic: done
+
+Function to Read Graph from User
+FUNCTION read_graph_from_user():
+    CREATE an empty dictionary 'graph'
+    PRINT "Enter the edges of the graph in the format 'Source Destination Weight'. Type 'done' when finished."
+    WHILE True:
+        READ edge from user input
+        IF edge is 'done':
+            BREAK
+        SPLIT edge into source, destination, and weight
+        ADD (destination, weight) to graph[source]
+        ADD (source, weight) to graph[destination]  # For undirected graph
+    RETURN graph
+
+Function to Read Heuristic Values from User
+FUNCTION read_heuristics_from_user():
+    CREATE an empty dictionary 'heuristics'
+    PRINT "Enter the heuristic values in the format 'Node Heuristic'. Type 'done' when finished."
+    WHILE True:
+        READ heuristic input from user
+        IF heuristic input is 'done':
+            BREAK
+        SPLIT input into node and heuristic value
+        ADD (node, heuristic value) to heuristics
+    RETURN heuristics
+
+A* Algorithm
+FUNCTION a_star(graph, heuristics, start, goal):
+    CREATE a priority queue 'open_set'
+    PUSH (f(start), g(start), start) INTO open_set  # f = g + h
+    
+    CREATE an empty dictionary 'g_costs' 
+    SET g_costs[start] = 0
+    
+    CREATE an empty dictionary 'came_from'  # To reconstruct the path
+    
+    WHILE open_set is not empty:
+        POP node with the lowest f value from open_set  # node = (f, g, current)
+        SET current to the node's value
+        
+        IF current == goal:
+            PRINT "Goal Reached!"
+            RECONSTRUCT and PRINT the path from start to goal using came_from
+            RETURN the path
+        
+        FOR each neighbor (neighbor, weight) of current:
+            CALCULATE tentative_g = g[current] + weight
+            IF neighbor not in g_costs or tentative_g < g_costs[neighbor]:
+                SET g_costs[neighbor] = tentative_g
+                f_cost = g_costs[neighbor] + heuristics[neighbor]
+                PUSH (f_cost, tentative_g, neighbor) INTO open_set
+                SET came_from[neighbor] = current
+    
+    PRINT "Goal not reachable."
+
+Step 1: Read the Graph
+Input: The function read_graph_from_user() reads the undirected weighted graph from the user. Each edge is entered in the format Source Destination Weight (e.g., A B 2).
+
+Process:
+
+For each edge, the source and destination nodes are added to each other's adjacency list with the associated weight.
+
+The graph is represented as a dictionary of lists, where each key is a node and the value is a list of tuples (neighbor, weight).
+
+The user types 'done' to finish the input.
+
+Output: The graph is returned as a dictionary representing the adjacency list of the graph.
+
+Step 2: Read the Heuristic Values
+Input: The function read_heuristics_from_user() reads the heuristic values for each node from the user, entered in the format Node Heuristic (e.g., A 6).
+
+Process:
+
+For each node and its heuristic value, the heuristic is stored in a dictionary where the node is the key and the heuristic value is the value.
+
+The user types 'done' to finish the input.
+
+Output: A dictionary containing the heuristic values for all nodes in the graph.
+
+Step 3: Initialize A* Search
+Input: The graph (from Step 1) and heuristic values (from Step 2).
+
+Process:
+
+Initialize the open set (priority queue) with the starting node, which is the first node to be explored. The priority queue is ordered by the f value, where f(n) = g(n) + h(n).
+
+Initialize the g_costs dictionary to store the cost to reach each node. Set the cost of the start node to 0.
+
+Initialize the came_from dictionary to store the best path to reconstruct the solution later.
+
+Step 4: A* Search Loop
+Input: The open set, g_costs, and the goal node.
+
+Process:
+
+Pop the node with the lowest f value (based on f = g + h) from the open set.
+
+If this node is the goal, backtrack using the came_from dictionary to reconstruct and print the path from the start to the goal.
+
+If not, explore each neighbor of the current node:
+
+Calculate the tentative g value as g(current) + weight of the edge to the neighbor.
+
+If this new g value is lower than the existing g value for the neighbor, update it.
+
+Compute the new f value as f = g + h and push the neighbor into the open set with its updated values.
+
+Update the came_from dictionary to reflect that the current node is the predecessor of the neighbor.
+
+Step 5: Goal Check and Path Construction
+Input: The goal node.
+
+Process: If the goal node is reached, the path is reconstructed by following the came_from dictionary from the goal to the start node.
+
+Output: The reconstructed path from the start to the goal node.
+
+Step 6: Goal Not Reachable
+Process: If the open set is empty and the goal node hasn't been reached, the algorithm outputs that the goal is not reachable.
+
+Time Complexity
+The time complexity of A* is dominated by the priority queue operations (insertions and extractions), which run in 
+𝑂
+(
+log
+⁡
+𝑉
+)
+O(logV) time, where 
+𝑉
+V is the number of vertices (nodes).
+
+Time Complexity: 
+𝑂
+(
+(
+𝑉
++
+𝐸
+)
+log
+⁡
+𝑉
+)
+O((V+E)logV), where:
+
+𝑉
+V is the number of vertices (nodes),
+
+𝐸
+E is the number of edges (connections between nodes),
+
+The 
+log
+⁡
+𝑉
+logV term comes from the heap operations for inserting and extracting nodes.
