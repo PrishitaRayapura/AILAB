@@ -1,0 +1,231 @@
+import heapq
+
+# Step 1: Get Directed, Weighted Graph from User Input
+def get_graph_from_user():
+    graph = {}
+    num_edges = int(input("Enter the number of edges in the graph: "))
+    print("Enter the edges (source, destination, weight):")
+    for _ in range(num_edges):
+        source, destination, weight = input().split()
+        weight = int(weight)
+        if source not in graph:
+            graph[source] = []
+        graph[source].append((destination, weight))
+    return graph
+
+# Step 2: Get Heuristic Values from User Input
+def get_heuristics_from_user():
+    heuristics = {}
+    num_nodes = int(input("Enter the number of nodes in the graph: "))
+    print("Enter the heuristic values (node, heuristic_value):")
+    for _ in range(num_nodes):
+        node, heuristic_value = input().split()
+        heuristics[node] = int(heuristic_value)
+    return heuristics
+
+# Step 3: A* Algorithm Implementation
+def a_star(graph, heuristics, start, goal):
+    # Priority queue to store nodes to explore
+    open_set = []
+    heapq.heappush(open_set, (0 + heuristics[start], 0, start))  # (f, g, node)
+    
+    # Dictionary to store the cost from start to each node
+    g_costs = {start: 0}
+    # Dictionary to store the best path to reconstruct the solution
+    came_from = {}
+
+    while open_set:
+        _, g, current = heapq.heappop(open_set)
+        
+        if current == goal:
+            print("Goal reached!")
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+            print("Path:", " -> ".join(path))
+            return
+
+        # Explore neighbors
+        for neighbor, weight in graph.get(current, []):
+            tentative_g = g + weight
+
+            if neighbor not in g_costs or tentative_g < g_costs[neighbor]:
+                g_costs[neighbor] = tentative_g
+                f_cost = tentative_g + heuristics.get(neighbor, float('inf'))
+                heapq.heappush(open_set, (f_cost, tentative_g, neighbor))
+                came_from[neighbor] = current
+    
+    print("Goal not reachable.")
+
+# Step 4: Running the Algorithm
+print("Enter the directed, weighted graph and heuristic values.")
+
+# Get the graph and heuristics from user
+graph = get_graph_from_user()
+heuristics = get_heuristics_from_user()
+
+print("\nGraph:", graph)
+print("Heuristics:", heuristics)
+
+# Input start and goal nodes
+start_node = input("\nEnter the starting node: ")
+goal_node = input("Enter the goal node: ")
+
+# Run A* Search
+print("\nA* Search Traversal:")
+a_star(graph, heuristics, start_node, goal_node)
+
+Enter the number of edges in the graph: 5
+Enter the edges (source, destination, weight):
+A B 2
+A C 1
+B D 3
+C D 1
+D E 5
+
+Enter the number of nodes in the graph: 5
+Enter the heuristic values (node, heuristic_value):
+A 6
+B 4
+C 3
+D 2
+E 0
+
+Enter the starting node: A
+Enter the goal node: E
+
+FUNCTION get_graph_from_user():
+    INITIALIZE an empty dictionary 'graph'
+    PROMPT the user for the number of edges 'num_edges'
+    FOR each edge (source, destination, weight) in 'num_edges':
+        ADD destination and weight to graph[source]
+    RETURN graph
+
+FUNCTION get_heuristics_from_user():
+    INITIALIZE an empty dictionary 'heuristics'
+    PROMPT the user for the number of nodes 'num_nodes'
+    FOR each node (node, heuristic_value) in 'num_nodes':
+        ADD heuristic_value to heuristics[node]
+    RETURN heuristics
+
+FUNCTION a_star(graph, heuristics, start, goal):
+    INITIALIZE open_set as an empty priority queue
+    INITIALIZE g_costs as a dictionary with the start node having a cost of 0
+    INITIALIZE came_from as an empty dictionary (stores the best path)
+    
+    PUSH (0 + heuristics[start], 0, start) into open_set (priority queue)
+    
+    WHILE open_set is not empty:
+        POP the node with the lowest f value (f = g + h) from open_set
+        IF current node == goal:
+            PRINT "Goal reached!"
+            BACKTRACK from goal to start using came_from and PRINT the path
+            RETURN path
+        
+        FOR each neighbor of current node:
+            CALCULATE the tentative g value (g[neighbor] = g[current] + edge weight)
+            
+            IF neighbor not in g_costs or tentative g value < current g value:
+                UPDATE g_costs[neighbor] to tentative g value
+                CALCULATE f value as f = g_costs[neighbor] + heuristics[neighbor]
+                PUSH neighbor into open_set with f value
+                SET came_from[neighbor] to current node
+    
+    PRINT "Goal not reachable"
+
+---
+
+### **A\* Algorithm (Directed, Weighted Graph + Heuristic from User Input)**
+
+---
+
+#### **Step 1: Get the Directed, Weighted Graph from User Input**
+
+1. **Create an empty graph**: This will be represented as a dictionary of adjacency lists.
+2. **Prompt the user** for the number of edges in the graph.
+3. **For each edge**:
+   - Read the **source node**, **destination node**, and **edge weight**.
+   - Add the **destination and weight** to the adjacency list of the source node.
+4. **Return the graph** as a dictionary, where the keys are the nodes and the values are lists of tuples (neighbor, weight).
+
+---
+
+#### **Step 2: Get Heuristic Values from User Input**
+
+1. **Create an empty heuristic dictionary**.
+2. **Prompt the user** for the number of nodes in the graph.
+3. **For each node**:
+   - Read the **node name** and its **heuristic value**.
+   - Store the **heuristic value** for the node in the dictionary.
+4. **Return the heuristic values** as a dictionary where the keys are the node names and the values are the heuristic values (h-values).
+
+---
+
+#### **Step 3: Implement the A\* Algorithm**
+
+1. **Initialize a priority queue** (open set) to store the nodes to explore, ordered by their total cost `f = g + h`. 
+   - `g` is the actual cost from the start node to the current node.
+   - `h` is the heuristic estimate from the current node to the goal node.
+   
+2. **Initialize a dictionary `g_costs`** to store the actual cost `g` from the start node to each node. Set the cost of the start node to 0.
+   
+3. **Initialize a dictionary `came_from`** to store the best path (predecessor of each node).
+
+4. **Add the start node to the open set** with a priority of `f = h[start]` (because initially `g[start] = 0`).
+
+---
+
+#### **Step 4: A\* Search Loop**
+
+1. **While the priority queue is not empty**:
+   - **Pop the node with the lowest f-value** from the open set.
+   - **Set this node as the current node**.
+   
+2. **Check if the current node is the goal**:
+   - If it is, print "Goal reached!".
+   - **Backtrack through the `came_from` dictionary** to reconstruct the path from start to goal.
+   - **Print the path** and return it.
+
+3. **Otherwise**:
+   - For each **neighbor** of the current node:
+     - Calculate the **tentative g value** (the cost from the start to the neighbor via the current node).
+     - If the neighbor hasn't been visited or the tentative g value is better (lower) than the current value:
+       - **Update the g cost for the neighbor**.
+       - **Calculate the new f value** for the neighbor.
+       - Add the neighbor to the open set with its updated f value.
+       - **Set the current node as the predecessor** of the neighbor in the `came_from` dictionary.
+
+---
+
+#### **Step 5: If the Goal is Not Reachable**
+
+1. If the priority queue is **empty** and the goal node is not reached, print "Goal not reachable."
+
+---
+
+### **Time Complexity**
+
+The time complexity of the **A\*** algorithm is:
+\[
+O((V + E) \cdot \log V)
+\]
+Where:
+- \(V\) is the number of vertices (nodes),
+- \(E\) is the number of edges,
+- The \(\log V\) term comes from the priority queue operations.
+
+---
+
+### **Summary of Key Concepts**
+
+- **g(n)**: The actual cost from the start node to node `n`.
+- **h(n)**: The heuristic estimate of the cost from node `n` to the goal node.
+- **f(n) = g(n) + h(n)**: The total estimated cost of the cheapest path through node `n`.
+
+---
+
+This pseudocode and algorithm outline the process of using **A\* Search** to find the shortest path in a directed weighted graph, with user-supplied graph edges and heuristic values.
+
