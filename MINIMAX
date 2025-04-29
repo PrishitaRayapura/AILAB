@@ -1,0 +1,211 @@
+import random
+
+# Function to print the board
+def print_board(board):
+    for row in board:
+        print(" | ".join(row))
+    print("-" * 9)
+
+# Function to check if there is a winner
+def check_winner(board, player):
+    # Check rows
+    for row in board:
+        if row.count(player) == 3:
+            return True
+    # Check columns
+    for col in range(3):
+        if board[0][col] == board[1][col] == board[2][col] == player:
+            return True
+    # Check diagonals
+    if (board[0][0] == board[1][1] == board[2][2] == player) or \
+       (board[0][2] == board[1][1] == board[2][0] == player):
+        return True
+    return False
+
+# Function to check for available moves
+def available_moves(board):
+    moves = []
+    for row in range(len(board)):
+        for col in range(len(board[row])):
+            if board[row][col] == " ":
+                moves.append((row, col))
+    return moves
+
+# Minimax algorithm
+def minimax(board, depth, is_maximizing, player, opponent):
+    if check_winner(board, player):
+        return 10 - depth  # AI wins
+    if check_winner(board, opponent):
+        return depth - 10  # Opponent wins
+    if not available_moves(board):
+        return 0  # Tie
+
+    if is_maximizing:
+        best_score = -float('inf')
+        for move in available_moves(board):
+            row, col = move
+            board[row][col] = player
+            score = minimax(board, depth + 1, False, player, opponent)
+            board[row][col] = " "
+            best_score = max(score, best_score)
+        return best_score
+    else:
+        best_score = float('inf')
+        for move in available_moves(board):
+            row, col = move
+            board[row][col] = opponent
+            score = minimax(board, depth + 1, True, player, opponent)
+            board[row][col] = " "
+            best_score = min(score, best_score)
+        return best_score
+
+# Function to find the best move for the AI
+def best_move(board, player, opponent):
+    best_score = -float('inf')
+    move = None
+    for row, col in available_moves(board):
+        board[row][col] = player
+        score = minimax(board, 0, False, player, opponent)
+        board[row][col] = " "
+        if score > best_score:
+            best_score = score
+            move = (row, col)
+    return move
+
+# Function to play the Tic-Tac-Toe game
+def tic_tac_toe():
+    board = [
+        [" "] * 4,  # first row has 4 columns
+        [" "] * 3,
+        [" "] * 3
+    ]
+    current_player = "X"
+    opponent = "O"
+
+    print("Welcome to Tic-Tac-Toe!")
+
+    for turn in range(9):  # Maximum of 9 moves
+        print_board(board)
+        if current_player == "X":  # Human player's turn
+            print(f"Player {current_player}'s turn")
+            valid = False
+            while not valid:
+                try:
+                    row, col = map(int, input("Enter row and column (0-indexed) separated by space: ").split())
+                    if (0 <= row < len(board)) and (0 <= col < len(board[row])) and board[row][col] == " ":
+                        board[row][col] = current_player
+                        valid = True
+                    else:
+                        print("Invalid move. Try again.")
+                except ValueError:
+                    print("Invalid input. Enter two numbers separated by space.")
+        else:  # AI player's turn
+            print(f"Player {current_player}'s (AI) turn")
+            row, col = best_move(board, current_player, opponent)
+            board[row][col] = current_player
+            print(f"AI places {current_player} at ({row}, {col})")
+
+        # Check for a winner
+        if check_winner(board, current_player):
+            print_board(board)
+            print(f"Player {current_player} wins!")
+            return
+
+        # Switch players
+        current_player, opponent = opponent, current_player
+
+    print_board(board)
+    print("It's a tie!")
+
+# Run the game
+tic_tac_toe()
+
+1. Initialize the 3x3 Tic-Tac-Toe board as a 2D list with empty spaces.
+
+2. Define a function to print the board:
+   - Iterate through the board and print each row with " | " separating elements.
+
+3. Define a function to check if a player has won:
+   - Check if any row contains three of the same player's symbols.
+   - Check if any column contains three of the same player's symbols.
+   - Check if any diagonal contains three of the same player's symbols.
+   - Return True if a win is detected, else return False.
+
+4. Define a function to check for available moves:
+   - Iterate through the board, and for each empty cell, add its coordinates to a list.
+
+5. Define the minimax function:
+   - If the player wins, return a positive score based on the depth.
+   - If the opponent wins, return a negative score based on the depth.
+   - If no moves are available, return 0 (tie).
+   - If it's the AI's turn (maximizing player), recursively calculate the best score by trying each available move and choosing the maximum.
+   - If it's the opponent's turn (minimizing player), recursively calculate the best score by trying each available move and choosing the minimum.
+
+6. Define a function to find the best move for the AI:
+   - For each available move, simulate the move, call the minimax function, and select the move with the best score.
+
+7. Define the main function to play the game:
+   - Alternate turns between the human player and AI.
+   - On the human player's turn, prompt for input, validate the move, and update the board.
+   - On the AI's turn, compute the best move using the minimax algorithm and update the board.
+   - After each move, check if there's a winner. If a winner is found, announce the winner and end the game.
+   - If all moves are made without a winner, announce a draw.
+
+8. Run the game.
+
+Initialize the Board:
+Create a 3x3 board with all cells empty.
+
+Check Winner Function:
+
+Check if any row contains all symbols of the current player.
+
+Check if any column contains all symbols of the current player.
+
+Check both diagonals for a win.
+
+If a winner is found, return True, otherwise return False.
+
+Available Moves Function:
+
+Iterate through the board and list the empty cells (coordinates of " ").
+
+Minimax Algorithm:
+
+Base Cases:
+
+If the current player has won, return a score of 10 - depth (AI wins).
+
+If the opponent has won, return a score of depth - 10 (Opponent wins).
+
+If no moves are available (board is full), return 0 (tie).
+
+Maximizing Player (AI):
+
+Loop through each available move, simulate the move, and call minimax recursively for the minimizing player (opponent).
+
+Keep track of the maximum score and return it.
+
+Minimizing Player (Opponent):
+
+Loop through each available move, simulate the move, and call minimax recursively for the maximizing player (AI).
+
+Keep track of the minimum score and return it.
+
+Best Move Function:
+
+For each available move, call the minimax function to get the score.
+
+Track and return the move with the highest score (AI's best move).
+
+Main Game Loop:
+
+Start with Player "X" (human) and alternate with AI (Player "O").
+
+For the human's turn, prompt the user for input and validate it.
+
+For the AI's turn, compute the best move using the minimax function and make the move.
+
+After every move, print the board and check for a winner.
+
+End the game if a player wins or if all spaces are filled, declaring a tie.
