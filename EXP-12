@@ -1,0 +1,268 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Step 1: Define the Fuzzy Sets
+def fuzzy_set_operations():
+    # Define universe of discourse (X-axis range)
+    X = np.linspace(0, 10, 100)
+    
+    # Define fuzzy sets using membership functions
+    # Fuzzy Set A: Triangular membership function
+    A = np.maximum(0, np.minimum((X - 2)/2, (8 - X)/2))
+
+    # Fuzzy Set B: Trapezoidal membership function
+    B = np.maximum(0, np.minimum((X - 4)/2, (6 - X)/2, (10 - X)/2))
+
+    # Fuzzy Set C: Gaussian membership function
+    C = np.exp(-0.5 * ((X - 5)/1)**2)
+
+    # Step 2: Perform Union, Intersection, and Complement
+    # Union of A and B (max of memberships)
+    union_ab = np.maximum(A, B)
+    
+    # Intersection of A and B (min of memberships)
+    intersection_ab = np.minimum(A, B)
+
+    # Complement of A, B, and C (1 - membership values)
+    complement_a = 1 - A
+    complement_b = 1 - B
+    complement_c = 1 - C
+    
+    # Step 3: Plot the Results
+    plt.figure(figsize=(12, 8))
+    
+    # Plot all sets
+    plt.subplot(3, 2, 1)
+    plt.plot(X, A, label="Fuzzy Set A", color='blue')
+    plt.title("Fuzzy Set A")
+    plt.grid(True)
+
+    plt.subplot(3, 2, 2)
+    plt.plot(X, B, label="Fuzzy Set B", color='green')
+    plt.title("Fuzzy Set B")
+    plt.grid(True)
+
+    plt.subplot(3, 2, 3)
+    plt.plot(X, C, label="Fuzzy Set C", color='red')
+    plt.title("Fuzzy Set C")
+    plt.grid(True)
+
+    # Plot the Union of A and B
+    plt.subplot(3, 2, 4)
+    plt.plot(X, union_ab, label="Union of A and B", color='purple')
+    plt.title("Union of A and B")
+    plt.grid(True)
+
+    # Plot the Intersection of A and B
+    plt.subplot(3, 2, 5)
+    plt.plot(X, intersection_ab, label="Intersection of A and B", color='orange')
+    plt.title("Intersection of A and B")
+    plt.grid(True)
+
+    # Plot the Complement of A
+    plt.subplot(3, 2, 6)
+    plt.plot(X, complement_a, label="Complement of A", color='brown')
+    plt.title("Complement of A")
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+# Run the function to demonstrate fuzzy set operations
+fuzzy_set_operations()
+
+FUNCTION define_fuzzy_sets():
+    # Universe of discourse (X-axis)
+    X = range(0, 10)  # Set of all possible values for the fuzzy sets
+
+    # Fuzzy Set A: Triangular membership function
+    A = create_triangular_membership(X)
+
+    # Fuzzy Set B: Trapezoidal membership function
+    B = create_trapezoidal_membership(X)
+
+    # Fuzzy Set C: Gaussian membership function
+    C = create_gaussian_membership(X)
+
+    RETURN A, B, C
+
+FUNCTION union(A, B):
+    # Union of two fuzzy sets is obtained by taking the maximum of the membership values at each point
+    UNION_RESULT = []
+    FOR each x in X:
+        UNION_RESULT.append(max(A[x], B[x]))
+    RETURN UNION_RESULT
+
+FUNCTION intersection(A, B):
+    # Intersection of two fuzzy sets is obtained by taking the minimum of the membership values at each point
+    INTERSECTION_RESULT = []
+    FOR each x in X:
+        INTERSECTION_RESULT.append(min(A[x], B[x]))
+    RETURN INTERSECTION_RESULT
+
+FUNCTION complement(A):
+    # Complement of a fuzzy set is obtained by subtracting the membership values from 1
+    COMPLEMENT_RESULT = []
+    FOR each x in X:
+        COMPLEMENT_RESULT.append(1 - A[x])
+    RETURN COMPLEMENT_RESULT
+
+Step 1: Define Fuzzy Sets
+Input: Define fuzzy sets 
+𝐴
+A, 
+𝐵
+B, and 
+𝐶
+C using membership functions.
+
+Fuzzy Set A: A triangular membership function where the membership starts at 0, increases to 1 at the center of the set, and then decreases back to 0.
+
+Fuzzy Set B: A trapezoidal membership function where the membership starts at 0, rises to 1, remains at 1 for a while, and then drops back to 0.
+
+Fuzzy Set C: A Gaussian membership function, centered at a certain value, usually resembling a bell curve.
+
+Process: Generate the membership values for each set based on the chosen functions.
+
+Step 2: Perform Union (A ∪ B)
+Input: Two fuzzy sets 
+𝐴
+A and 
+𝐵
+B.
+
+Process:
+
+For each element in the universe of discourse 
+𝑋
+X, calculate the maximum of the membership values from sets 
+𝐴
+A and 
+𝐵
+B.
+
+Union
+(
+𝐴
+,
+𝐵
+)
+=
+max
+⁡
+(
+𝐴
+(
+𝑥
+)
+,
+𝐵
+(
+𝑥
+)
+)
+Union(A,B)=max(A(x),B(x)) for all 
+𝑥
+∈
+𝑋
+x∈X.
+
+Output: The fuzzy set representing the union of 
+𝐴
+A and 
+𝐵
+B.
+
+Step 3: Perform Intersection (A ∩ B)
+Input: Two fuzzy sets 
+𝐴
+A and 
+𝐵
+B.
+
+Process:
+
+For each element in the universe of discourse 
+𝑋
+X, calculate the minimum of the membership values from sets 
+𝐴
+A and 
+𝐵
+B.
+
+Intersection
+(
+𝐴
+,
+𝐵
+)
+=
+min
+⁡
+(
+𝐴
+(
+𝑥
+)
+,
+𝐵
+(
+𝑥
+)
+)
+Intersection(A,B)=min(A(x),B(x)) for all 
+𝑥
+∈
+𝑋
+x∈X.
+
+Output: The fuzzy set representing the intersection of 
+𝐴
+A and 
+𝐵
+B.
+
+Step 4: Perform Complement (¬A)
+Input: A fuzzy set 
+𝐴
+A.
+
+Process:
+
+For each element in the universe of discourse 
+𝑋
+X, calculate the complement of the membership value from set 
+𝐴
+A.
+
+Complement
+(
+𝐴
+)
+=
+1
+−
+𝐴
+(
+𝑥
+)
+Complement(A)=1−A(x) for all 
+𝑥
+∈
+𝑋
+x∈X.
+
+Output: The fuzzy set representing the complement of 
+𝐴
+A.
+
+Step 5: Visualization
+Process: Plot the fuzzy sets 
+𝐴
+A, 
+𝐵
+B, 
+𝐶
+C, and the results of the operations (union, intersection, and complement) using appropriate plotting tools (e.g., matplotlib in Python).
+
+Output: A set of plots showing the fuzzy sets and the results of the operations.
