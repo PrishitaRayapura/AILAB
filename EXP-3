@@ -1,0 +1,119 @@
+from collections import defaultdict, deque
+
+# Step 1: Read graph from user input
+def read_graph_from_user():
+    graph = defaultdict(list)
+    num_edges = int(input("Enter the number of edges: "))
+    
+    print("Enter each edge in the format: source destination")
+    for _ in range(num_edges):
+        u, v = input().split()
+        graph[u].append(v)
+        graph[v].append(u)  # because the graph is undirected
+    
+    return graph
+
+# Step 2: BFS implementation using a queue
+def bfs(graph, start_node):
+    visited = set()
+    queue = deque([start_node])
+    
+    while queue:
+        node = queue.popleft()
+        if node not in visited:
+            print(node, end=' ')  # Process the node
+            visited.add(node)
+            
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+
+# Step 3: Run the program
+graph = read_graph_from_user()
+print("\nGraph:", dict(graph))
+
+start_node = input("\nEnter the starting node for BFS traversal: ")
+print("\nBFS Traversal:")
+bfs(graph, start_node)
+
+Enter the number of edges: 5
+Enter each edge in the format: source destination
+A B
+A C
+B D
+C D
+C E
+
+Graph: {'A': ['B', 'C'], 'B': ['A', 'D'], 'C': ['A', 'D', 'E'], 'D': ['B', 'C'], 'E': ['C']}
+
+Enter the starting node for BFS traversal: A
+
+BFS Traversal:
+A B C D E
+
+1. FUNCTION read_graph_from_user():
+    a. Initialize an empty graph (dictionary with lists)
+    b. INPUT number of edges (n)
+    c. FOR i = 1 to n:
+        i. INPUT source and destination nodes
+        ii. Add destination to source's adjacency list
+        iii. Add source to destination's adjacency list (since the graph is undirected)
+    d. RETURN graph
+
+2. FUNCTION bfs(graph, start_node):
+    a. Initialize an empty set visited
+    b. Initialize a queue and add start_node
+    c. WHILE queue is not empty:
+        i. Dequeue a node from the front of the queue
+        ii. IF node is not in visited:
+            - Print (or process) the node
+            - Mark node as visited
+            - FOR each neighbor of the node:
+                - IF neighbor not in visited:
+                    - Enqueue neighbor into the queue
+
+3. MAIN:
+    a. Call read_graph_from_user() to build the graph
+    b. INPUT start_node
+    c. Call bfs(graph, start_node)
+
+Step 1: Build the Graph
+Initialize an empty adjacency list.
+
+Ask the user for the number of edges.
+
+For each edge:
+
+Input the source and destination.
+
+Add the destination to the source's adjacency list.
+
+Add the source to the destination's adjacency list (undirected).
+
+Step 2: Perform BFS Traversal
+Initialize an empty visited set.
+
+Initialize a queue and enqueue the start node.
+
+While the queue is not empty:
+
+Dequeue a node from the front.
+
+If the node has not been visited:
+
+Process the node (e.g., print it).
+
+Mark it as visited.
+
+For each neighbor of the current node:
+
+If the neighbor has not been visited:
+
+Enqueue the neighbor.
+
+Step 3: Main Execution
+Build the graph using user input.
+
+Ask the user for the start node.
+
+Perform BFS starting from that node.
