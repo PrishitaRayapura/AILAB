@@ -1,0 +1,238 @@
+import heapq
+import pandas as pd
+
+# Step 1: Read the undirected weighted graph from CSV file
+def read_graph_from_csv(graph_file):
+    # Reading the graph from the CSV
+    df = pd.read_csv(graph_file)
+    graph = {}
+    
+    for _, row in df.iterrows():
+        u, v, weight = row['Source'], row['Destination'], row['Weight']
+        if u not in graph:
+            graph[u] = []
+        if v not in graph:
+            graph[v] = []
+        graph[u].append((v, weight))
+        graph[v].append((u, weight))  # For undirected graph, add both directions
+    
+    return graph
+
+# Step 2: Read the heuristic values from CSV file
+def read_heuristics_from_csv(heuristic_file):
+    df = pd.read_csv(heuristic_file)
+    heuristics = {}
+    for _, row in df.iterrows():
+        node, heuristic_value = row['Node'], row['Heuristic']
+        heuristics[node] = heuristic_value
+    return heuristics
+
+# Step 3: A* Algorithm Implementation
+def a_star(graph, heuristics, start, goal):
+    # Priority queue for A* (f = g + h)
+    open_set = []
+    heapq.heappush(open_set, (0 + heuristics[start], 0, start))  # (f, g, node)
+    
+    # g_costs: the actual cost to reach each node
+    g_costs = {start: 0}
+    
+    # came_from: dictionary to reconstruct the path
+    came_from = {}
+    
+    while open_set:
+        _, g, current = heapq.heappop(open_set)
+        
+        # If we reached the goal, reconstruct the path
+        if current == goal:
+            print("Goal reached!")
+            path = []
+            while current in came_from:
+                path.append(current)
+                current = came_from[current]
+            path.append(start)
+            path.reverse()
+            print("Path:", " -> ".join(path))
+            return
+        
+        # Explore neighbors
+        for neighbor, weight in graph.get(current, []):
+            tentative_g = g + weight
+            
+            if neighbor not in g_costs or tentative_g < g_costs[neighbor]:
+                g_costs[neighbor] = tentative_g
+                f_cost = tentative_g + heuristics.get(neighbor, float('inf'))
+                heapq.heappush(open_set, (f_cost, tentative_g, neighbor))
+                came_from[neighbor] = current
+    
+    print("Goal not reachable.")
+
+# Step 4: Main Execution
+
+# Get the graph and heuristics from CSV files
+graph_file = "graph.csv"  # Update this with your CSV file for graph
+heuristic_file = "heuristics.csv"  # Update this with your CSV file for heuristic values
+
+graph = read_graph_from_csv(graph_file)
+heuristics = read_heuristics_from_csv(heuristic_file)
+
+print("Graph:", graph)
+print("Heuristics:", heuristics)
+
+# Input start and goal nodes
+start_node = input("\nEnter the starting node: ")
+goal_node = input("Enter the goal node: ")
+
+# Run A* algorithm
+print("\nA* Search Traversal:")
+a_star(graph, heuristics, start_node, goal_node)
+
+graph.csv
+Source,Destination,Weight
+A,B,2
+A,C,1
+B,D,3
+C,D,1
+D,E,5
+
+heuristics.csv
+Node,Heuristic
+A,6
+B,4
+C,3
+D,2
+E,0
+
+Function to Read Graph from CSV
+FUNCTION read_graph_from_csv(graph_file):
+    CREATE an empty dictionary 'graph'
+    READ CSV file into dataframe
+    FOR each row in dataframe:
+        EXTRACT Source, Destination, Weight from the row
+        ADD (Destination, Weight) to graph[Source]
+        ADD (Source, Weight) to graph[Destination]  # Undirected graph
+    RETURN graph
+
+Function to Read Heuristics from CSV
+FUNCTION read_heuristics_from_csv(heuristic_file):
+    CREATE an empty dictionary 'heuristics'
+    READ CSV file into dataframe
+    FOR each row in dataframe:
+        EXTRACT Node, Heuristic value from the row
+        ADD (Node, Heuristic value) to heuristics dictionary
+    RETURN heuristics
+
+A* Algorithm
+FUNCTION a_star(graph, heuristics, start, goal):
+    CREATE an empty priority queue 'open_set'
+    PUSH (f(start), g(start), start) INTO open_set  # f = g + h
+    
+    CREATE an empty dictionary 'g_costs'
+    SET g_costs[start] = 0
+    
+    CREATE an empty dictionary 'came_from'
+    
+    WHILE open_set is not empty:
+        POP node with the lowest f value from open_set  # node = (f, g, current)
+        SET current to the node's value
+        
+        IF current == goal:
+            PRINT "Goal Reached!"
+            RECONSTRUCT and PRINT the path from start to goal using came_from
+            RETURN the path
+        
+        FOR each neighbor (neighbor, weight) of current:
+            CALCULATE tentative_g = g[current] + weight
+            IF neighbor not in g_costs or tentative_g < g_costs[neighbor]:
+                SET g_costs[neighbor] = tentative_g
+                f_cost = g_costs[neighbor] + heuristics[neighbor]
+                PUSH (f_cost, tentative_g, neighbor) INTO open_set
+                SET came_from[neighbor] = current
+    
+    PRINT "Goal not reachable."
+
+Step 1: Read the Graph
+Input: The function read_graph_from_csv(graph_file) reads an undirected weighted graph from a CSV file where each row contains a Source, Destination, and Weight.
+
+Process:
+
+For each edge (Source, Destination, Weight), the algorithm adds the destination and weight to the source node's adjacency list.
+
+Since it's an undirected graph, the algorithm also adds the source and weight to the destination node's adjacency list.
+
+Output: A dictionary representing the graph, where each key is a node, and its value is a list of neighboring nodes and the respective edge weights.
+
+Step 2: Read the Heuristic Values
+Input: The function read_heuristics_from_csv(heuristic_file) reads heuristic values from a CSV file where each row contains a Node and its Heuristic.
+
+Process:
+
+For each row, the algorithm stores the heuristic value in a dictionary, mapping nodes to their respective heuristic values.
+
+Output: A dictionary representing heuristic values where each key is a node and its value is the heuristic estimate of the cost from that node to the goal.
+
+Step 3: Initialize A* Search
+Input: The graph (from Step 1) and heuristic values (from Step 2).
+
+Process:
+
+Initialize the open set (priority queue) with the starting node, using its heuristic value (f(start) = g(start) + h(start)).
+
+Initialize the g_costs dictionary to store the actual cost to reach each node, starting with g(start) = 0.
+
+Initialize the came_from dictionary to store the best path to reconstruct the solution later.
+
+Step 4: A* Search Loop
+Input: The open set, g_costs, and the goal node.
+
+Process:
+
+Pop the node with the lowest f value from the open set.
+
+If this node is the goal, backtrack using the came_from dictionary to reconstruct and print the path from start to goal.
+
+Otherwise, for each neighbor of the current node:
+
+Calculate the tentative g-value (tentative_g = g[current] + weight).
+
+If this g-value is better than the current g-value, update the g-cost and compute the new f-value (f = g + h).
+
+Push the neighbor into the open set with its updated f-value and mark the current node as the predecessor in the came_from dictionary.
+
+Step 5: Goal Check and Path Construction
+Input: The goal node.
+
+Process: If the goal node is reached, reconstruct the path from the start to the goal by following the came_from dictionary and print the path.
+
+Output: The reconstructed path from start to goal.
+
+Step 6: Goal Not Reachable
+Process: If the open set is empty and the goal hasn't been reached, print that the goal is not reachable.
+
+Time Complexity
+The time complexity of A* is dominated by the operations of the priority queue (min-heap), which ensures that the node with the lowest f value is always expanded next.
+
+Time Complexity: 
+𝑂
+(
+(
+𝑉
++
+𝐸
+)
+log
+⁡
+𝑉
+)
+O((V+E)logV), where:
+
+𝑉
+V is the number of vertices (nodes),
+
+𝐸
+E is the number of edges (connections between nodes),
+
+The 
+log
+⁡
+𝑉
+logV term comes from the heap operations for inserting and extracting nodes.
