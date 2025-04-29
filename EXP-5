@@ -1,0 +1,183 @@
+from queue import PriorityQueue
+from collections import defaultdict
+
+# Step 1: Read undirected weighted graph from user input
+def read_graph_from_user():
+    graph = defaultdict(list)
+    num_edges = int(input("Enter the number of edges: "))
+    
+    print("Enter each edge in the format: source destination weight")
+    for _ in range(num_edges):
+        u, v, w = input().split()
+        w = int(w)
+        graph[u].append((v, w))
+        graph[v].append((u, w))  # Since the graph is undirected
+    
+    return graph
+
+# Step 2: Read heuristic values from user input
+def read_heuristics_from_user():
+    heuristics = {}
+    num_nodes = int(input("\nEnter the number of nodes for heuristic values: "))
+    
+    print("Enter each node and its heuristic value in the format: node value")
+    for _ in range(num_nodes):
+        node, h = input().split()
+        heuristics[node] = int(h)
+    
+    return heuristics
+
+# Step 3: Best First Search algorithm
+def best_first_search(graph, heuristics, start, goal):
+    visited = set()
+    pq = PriorityQueue()
+    pq.put((heuristics[start], start))  # Priority based on heuristic value
+    
+    while not pq.empty():
+        h, node = pq.get()
+        if node not in visited:
+            print(node, end=' ')  # Process the node
+            visited.add(node)
+            
+            if node == goal:
+                print("\nGoal reached!")
+                return
+            
+            for neighbor, weight in graph[node]:
+                if neighbor not in visited:
+                    pq.put((heuristics[neighbor], neighbor))
+    
+    print("\nGoal not reachable.")
+
+# Step 4: Run the program
+graph = read_graph_from_user()
+heuristics = read_heuristics_from_user()
+
+print("\nGraph:", dict(graph))
+print("Heuristics:", heuristics)
+
+start_node = input("\nEnter the starting node: ")
+goal_node = input("Enter the goal node: ")
+
+print("\nBest First Search Traversal:")
+best_first_search(graph, heuristics, start_node, goal_node)
+
+Enter the number of edges: 6
+Enter each edge in the format: source destination weight
+A B 2
+A C 3
+B D 4
+C D 1
+C E 6
+E F 5
+
+Enter the number of nodes for heuristic values: 6
+Enter each node and its heuristic value in the format: node value
+A 10
+B 8
+C 5
+D 3
+E 7
+F 0
+
+Graph: {'A': [('B', 2), ('C', 3)], 'B': [('A', 2), ('D', 4)], 'C': [('A', 3), ('D', 1), ('E', 6)], 'D': [('B', 4), ('C', 1)], 'E': [('C', 6), ('F', 5)], 'F': [('E', 5)]}
+Heuristics: {'A': 10, 'B': 8, 'C': 5, 'D': 3, 'E': 7, 'F': 0}
+
+Enter the starting node: A
+Enter the goal node: F
+
+Best First Search Traversal:
+A C D E F
+Goal reached!
+
+FUNCTION read_graph_from_user():
+    Initialize empty dictionary 'graph'
+    INPUT number_of_edges
+    FOR i from 1 to number_of_edges:
+        INPUT source, destination, weight
+        Add (destination, weight) to graph[source]
+        Add (source, weight) to graph[destination]  // because graph is undirected
+    RETURN graph
+
+FUNCTION read_heuristics_from_user():
+    Initialize empty dictionary 'heuristics'
+    INPUT number_of_nodes
+    FOR i from 1 to number_of_nodes:
+        INPUT node, heuristic_value
+        heuristics[node] = heuristic_value
+    RETURN heuristics
+
+FUNCTION best_first_search(graph, heuristics, start_node, goal_node):
+    Initialize empty set 'visited'
+    Initialize priority queue 'pq'
+    Insert (heuristics[start_node], start_node) into pq
+
+    WHILE pq is not empty:
+        Pop (heuristic, node) with lowest heuristic from pq
+        IF node NOT IN visited:
+            Print node
+            Add node to visited
+
+            IF node == goal_node:
+                Print "Goal reached"
+                RETURN
+
+            FOR each (neighbor, weight) in graph[node]:
+                IF neighbor NOT IN visited:
+                    Insert (heuristics[neighbor], neighbor) into pq
+
+    Print "Goal not reachable"
+
+Step 1: Read Graph
+Initialize an empty adjacency list.
+
+Input number of edges.
+
+For each edge:
+
+Read source, destination, weight.
+
+Add (destination, weight) to graph[source].
+
+Add (source, weight) to graph[destination].
+
+✅ Because the graph is undirected, both directions are stored.
+
+Step 2: Read Heuristic Values
+Initialize an empty heuristics dictionary.
+
+Input the number of nodes.
+
+For each node:
+
+Read the node name and heuristic value.
+
+Store in dictionary.
+
+Step 3: Perform Best First Search
+Initialize:
+
+An empty visited set.
+
+A priority queue with the start node using its heuristic value.
+
+While priority queue is not empty:
+
+Pop node with lowest heuristic.
+
+If it hasn't been visited:
+
+Process (print) it.
+
+Mark it as visited.
+
+If node equals the goal, terminate with success.
+
+Else, push each unvisited neighbor into the priority queue with their heuristic value.
+
+❗ Edge weights are not used in Best First Search — the algorithm uses heuristics only to choose the next node.
+
+Step 4: Final Output
+If the goal node is reached: "Goal reached"
+
+If the priority queue is exhausted: "Goal not reachable"
