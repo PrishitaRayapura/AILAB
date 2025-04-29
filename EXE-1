@@ -40,3 +40,63 @@ print("Graph:", dict(graph))
 
 print("\nDFS Traversal starting from node A:")
 dfs_recursive(graph, 'A')
+
+1. FUNCTION read_graph_from_csv(file_path):
+    a. Initialize an empty graph as a dictionary with list as default values
+    b. Read the CSV file into a data structure (e.g., table or list of rows)
+    c. FOR each row in the CSV:
+        i. Extract 'source' and 'destination' nodes
+        ii. Add an edge from source to destination
+        iii. Add an edge from destination to source (because the graph is undirected)
+    d. RETURN the graph
+
+2. FUNCTION dfs_recursive(graph, node, visited):
+    a. IF visited is None:
+        i. Initialize visited as an empty set
+    b. Add the current node to visited
+    c. PRINT the current node
+    d. FOR each neighbor of the current node:
+        i. IF neighbor not in visited:
+            - Call dfs_recursive(graph, neighbor, visited)
+
+3. MAIN:
+    a. Read the graph using read_graph_from_csv
+    b. Call dfs_recursive starting from the given starting node
+
+Step 1: Read Graph from CSV
+Initialize an empty adjacency list.
+
+Open and read the CSV file line by line.
+
+For each line:
+
+Extract the source and destination nodes.
+
+Add the destination node to the adjacency list of the source node.
+
+Add the source node to the adjacency list of the destination node (since the graph is undirected).
+
+Step 2: Recursive DFS Traversal
+Initialize an empty visited set.
+
+Start DFS from a specified starting node.
+
+In the DFS function:
+
+Mark the current node as visited.
+
+Process (e.g., print) the current node.
+
+For each neighbor of the current node:
+
+If the neighbor has not been visited:
+
+Recursively call DFS for the neighbor.
+
+Step 3: Main Execution
+Load the graph from the .csv file.
+
+Select a starting node.
+
+Perform a recursive DFS traversal starting from that node.
+
