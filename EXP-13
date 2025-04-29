@@ -1,0 +1,308 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Step 1: Define the Fuzzy Sets using membership functions
+def fuzzy_set_operations():
+    # Define universe of discourse (X-axis range)
+    X = np.linspace(0, 10, 100)
+    
+    # Define fuzzy sets using membership functions
+    # Fuzzy Set A: Triangular membership function
+    A = np.maximum(0, np.minimum((X - 2)/2, (8 - X)/2))
+
+    # Fuzzy Set B: Trapezoidal membership function
+    B = np.maximum(0, np.minimum((X - 4)/2, (6 - X)/2, (10 - X)/2))
+
+    # Step 2: Perform Union, Intersection, and Complement
+    # Union of A and B (max of memberships)
+    union_ab = np.maximum(A, B)
+    
+    # Intersection of A and B (min of memberships)
+    intersection_ab = np.minimum(A, B)
+
+    # Complement of A, B, and Union of A and B
+    complement_a = 1 - A
+    complement_b = 1 - B
+    complement_union_ab = 1 - union_ab
+
+    # De Morgan’s Law: Complement of Union = Complement of A Intersection Complement of B
+    complement_intersection_ab = np.minimum(complement_a, complement_b)
+    
+    # Step 3: Plot the Results
+    plt.figure(figsize=(12, 8))
+    
+    # Plot Fuzzy Set A
+    plt.subplot(3, 2, 1)
+    plt.plot(X, A, label="Fuzzy Set A", color='blue')
+    plt.title("Fuzzy Set A")
+    plt.grid(True)
+
+    # Plot Fuzzy Set B
+    plt.subplot(3, 2, 2)
+    plt.plot(X, B, label="Fuzzy Set B", color='green')
+    plt.title("Fuzzy Set B")
+    plt.grid(True)
+
+    # Plot the Union of A and B
+    plt.subplot(3, 2, 3)
+    plt.plot(X, union_ab, label="Union of A and B", color='purple')
+    plt.title("Union of A and B")
+    plt.grid(True)
+
+    # Plot the Intersection of A and B
+    plt.subplot(3, 2, 4)
+    plt.plot(X, intersection_ab, label="Intersection of A and B", color='orange')
+    plt.title("Intersection of A and B")
+    plt.grid(True)
+
+    # Plot the Complement of A
+    plt.subplot(3, 2, 5)
+    plt.plot(X, complement_a, label="Complement of A", color='brown')
+    plt.title("Complement of A")
+    plt.grid(True)
+
+    # Plot the Complement of Union of A and B
+    plt.subplot(3, 2, 6)
+    plt.plot(X, complement_union_ab, label="Complement of Union of A and B", color='red')
+    plt.plot(X, complement_intersection_ab, label="Complement of A Intersection Complement of B", color='yellow', linestyle='--')
+    plt.title("De Morgan's Law Demonstration")
+    plt.legend(loc="best")
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+# Run the function to demonstrate fuzzy set operations and De Morgan’s Law
+fuzzy_set_operations()
+
+FUNCTION define_fuzzy_sets():
+    # Universe of discourse (X-axis)
+    X = [0, 0.1, 0.2, ..., 10]  # Set of all possible values for the fuzzy sets
+
+    # Fuzzy Set A: Triangular membership function
+    A = create_triangular_membership(X)
+
+    # Fuzzy Set B: Trapezoidal membership function
+    B = create_trapezoidal_membership(X)
+
+    RETURN A, B
+
+FUNCTION union(A, B):
+    # Union of two fuzzy sets is obtained by taking the maximum of the membership values at each point
+    UNION_RESULT = []
+    FOR each x in X:
+        UNION_RESULT.append(max(A[x], B[x]))
+    RETURN UNION_RESULT
+
+FUNCTION intersection(A, B):
+    # Intersection of two fuzzy sets is obtained by taking the minimum of the membership values at each point
+    INTERSECTION_RESULT = []
+    FOR each x in X:
+        INTERSECTION_RESULT.append(min(A[x], B[x]))
+    RETURN INTERSECTION_RESULT
+
+FUNCTION complement(A):
+    # Complement of a fuzzy set is obtained by subtracting the membership values from 1
+    COMPLEMENT_RESULT = []
+    FOR each x in X:
+        COMPLEMENT_RESULT.append(1 - A[x])
+    RETURN COMPLEMENT_RESULT
+
+FUNCTION de_morgan(A, B):
+    # De Morgan’s Law: Complement of Union = Complement of A Intersection Complement of B
+    UNION_AB = union(A, B)
+    COMPLEMENT_UNION_AB = complement(UNION_AB)
+    COMPLEMENT_A = complement(A)
+    COMPLEMENT_B = complement(B)
+    INTERSECTION_COMPLEMENTS = intersection(COMPLEMENT_A, COMPLEMENT_B)
+    
+    # Check if De Morgan's Law holds
+    IF COMPLEMENT_UNION_AB == INTERSECTION_COMPLEMENTS:
+        PRINT "De Morgan's Law holds true"
+    ELSE:
+        PRINT "De Morgan's Law does NOT hold true"
+
+Step 1: Define Fuzzy Sets
+Input: Universe of discourse (X-axis) is defined as a set of values (e.g., 0 to 10 with small intervals).
+
+Process:
+
+Fuzzy Set A: Defined using a triangular membership function.
+
+Fuzzy Set B: Defined using a trapezoidal membership function.
+
+Step 2: Union (A ∪ B)
+Input: Two fuzzy sets 
+𝐴
+A and 
+𝐵
+B.
+
+Process:
+
+For each element 
+𝑥
+x in the universe of discourse 
+𝑋
+X, calculate the maximum of the membership values from sets 
+𝐴
+A and 
+𝐵
+B.
+
+Union
+(
+𝐴
+,
+𝐵
+)
+=
+max
+⁡
+(
+𝐴
+(
+𝑥
+)
+,
+𝐵
+(
+𝑥
+)
+)
+Union(A,B)=max(A(x),B(x)) for all 
+𝑥
+∈
+𝑋
+x∈X.
+
+Output: A new fuzzy set representing the union of 
+𝐴
+A and 
+𝐵
+B.
+
+Step 3: Intersection (A ∩ B)
+Input: Two fuzzy sets 
+𝐴
+A and 
+𝐵
+B.
+
+Process:
+
+For each element 
+𝑥
+x in the universe of discourse 
+𝑋
+X, calculate the minimum of the membership values from sets 
+𝐴
+A and 
+𝐵
+B.
+
+Intersection
+(
+𝐴
+,
+𝐵
+)
+=
+min
+⁡
+(
+𝐴
+(
+𝑥
+)
+,
+𝐵
+(
+𝑥
+)
+)
+Intersection(A,B)=min(A(x),B(x)) for all 
+𝑥
+∈
+𝑋
+x∈X.
+
+Output: A new fuzzy set representing the intersection of 
+𝐴
+A and 
+𝐵
+B.
+
+Step 4: Complement (¬A)
+Input: A fuzzy set 
+𝐴
+A.
+
+Process:
+
+For each element 
+𝑥
+x in the universe of discourse 
+𝑋
+X, calculate the complement by subtracting the membership value from 1.
+
+Complement
+(
+𝐴
+)
+=
+1
+−
+𝐴
+(
+𝑥
+)
+Complement(A)=1−A(x) for all 
+𝑥
+∈
+𝑋
+x∈X.
+
+Output: A new fuzzy set representing the complement of 
+𝐴
+A.
+
+Step 5: De Morgan’s Law (¬(A ∪ B) = ¬A ∩ ¬B)
+Input: Two fuzzy sets 
+𝐴
+A and 
+𝐵
+B.
+
+Process:
+
+Calculate the union of 
+𝐴
+A and 
+𝐵
+B.
+
+Take the complement of the union: 
+¬
+(
+𝐴
+∪
+𝐵
+)
+¬(A∪B).
+
+Take the complement of both sets 
+𝐴
+A and 
+𝐵
+B, and then find their intersection: 
+¬
+𝐴
+∩
+¬
+𝐵
+¬A∩¬B.
+
+Verify if the complement of the union is equal to the intersection of the complements. If they are equal, De Morgan's law holds true.
+
+Output: A message indicating whether De Morgan's Law holds or not.
