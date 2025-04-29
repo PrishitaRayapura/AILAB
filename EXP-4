@@ -1,0 +1,175 @@
+from queue import PriorityQueue
+from collections import defaultdict
+
+# Step 1: Read directed graph from user input
+def read_graph_from_user():
+    graph = defaultdict(list)
+    num_edges = int(input("Enter the number of edges: "))
+    
+    print("Enter each edge in the format: source destination")
+    for _ in range(num_edges):
+        u, v = input().split()
+        graph[u].append(v)  # Directed graph: only u -> v
+    
+    return graph
+
+# Step 2: Read heuristic values from user input
+def read_heuristics_from_user():
+    heuristics = {}
+    num_nodes = int(input("\nEnter the number of nodes for heuristic values: "))
+    
+    print("Enter each node and its heuristic value in the format: node value")
+    for _ in range(num_nodes):
+        node, h = input().split()
+        heuristics[node] = int(h)
+    
+    return heuristics
+
+# Step 3: Best First Search algorithm
+def best_first_search(graph, heuristics, start, goal):
+    visited = set()
+    pq = PriorityQueue()
+    pq.put((heuristics[start], start))  # Priority based on heuristic value
+    
+    while not pq.empty():
+        h, node = pq.get()
+        if node not in visited:
+            print(node, end=' ')  # Process the node
+            visited.add(node)
+            
+            if node == goal:
+                print("\nGoal reached!")
+                return
+            
+            for neighbor in graph[node]:
+                if neighbor not in visited:
+                    pq.put((heuristics[neighbor], neighbor))
+    
+    print("\nGoal not reachable.")
+
+# Step 4: Run the program
+graph = read_graph_from_user()
+heuristics = read_heuristics_from_user()
+
+print("\nGraph:", dict(graph))
+print("Heuristics:", heuristics)
+
+start_node = input("\nEnter the starting node: ")
+goal_node = input("Enter the goal node: ")
+
+print("\nBest First Search Traversal:")
+best_first_search(graph, heuristics, start_node, goal_node)
+
+Enter the number of edges: 6
+Enter each edge in the format: source destination
+A B
+A C
+B D
+C D
+C E
+E F
+
+Enter the number of nodes for heuristic values: 6
+Enter each node and its heuristic value in the format: node value
+A 10
+B 8
+C 5
+D 3
+E 7
+F 0
+
+Graph: {'A': ['B', 'C'], 'B': ['D'], 'C': ['D', 'E'], 'E': ['F']}
+Heuristics: {'A': 10, 'B': 8, 'C': 5, 'D': 3, 'E': 7, 'F': 0}
+
+Enter the starting node: A
+Enter the goal node: F
+
+Best First Search Traversal:
+A C D E F
+Goal reached!
+
+1. FUNCTION read_graph_from_user():
+    a. Initialize an empty graph (dictionary with lists)
+    b. INPUT number of edges (n)
+    c. FOR i = 1 to n:
+        i. INPUT source and destination nodes
+        ii. Add destination to source's adjacency list (directed edge)
+
+2. FUNCTION read_heuristics_from_user():
+    a. Initialize an empty dictionary for heuristics
+    b. INPUT number of nodes (m)
+    c. FOR i = 1 to m:
+        i. INPUT node and its heuristic value
+        ii. Store the heuristic value for the node
+
+3. FUNCTION best_first_search(graph, heuristics, start, goal):
+    a. Initialize an empty set visited
+    b. Initialize a priority queue and insert (heuristic[start], start)
+    c. WHILE priority queue is not empty:
+        i. Pop the node with the lowest heuristic value
+        ii. IF node not in visited:
+            - Print (or process) the node
+            - Mark node as visited
+            - IF node == goal:
+                - Print "Goal Reached" and RETURN
+            - FOR each neighbor of the node:
+                - IF neighbor not in visited:
+                    - Insert (heuristic[neighbor], neighbor) into the priority queue
+    d. IF goal not found after loop, print "Goal not reachable"
+
+4. MAIN:
+    a. Call read_graph_from_user() to get the graph
+    b. Call read_heuristics_from_user() to get heuristic values
+    c. INPUT start node and goal node
+    d. Call best_first_search(graph, heuristics, start, goal)
+
+Step 1: Read the Graph
+Initialize an empty adjacency list.
+
+Input the number of edges.
+
+For each edge:
+
+Input the source and destination nodes.
+
+Insert the destination into the source's adjacency list (since it's a directed graph).
+
+Step 2: Read Heuristic Values
+Initialize an empty heuristics dictionary.
+
+Input the number of nodes.
+
+For each node:
+
+Input the node name and its heuristic value.
+
+Store them in the dictionary.
+
+Step 3: Best First Search Traversal
+Initialize an empty visited set.
+
+Initialize a priority queue and insert the start node with its heuristic value.
+
+While the priority queue is not empty:
+
+Remove the node with the smallest heuristic value.
+
+If the node is not yet visited:
+
+Process (print) the node.
+
+Mark it as visited.
+
+If the node is the goal node, terminate the search.
+
+Otherwise, for each unvisited neighbor:
+
+Insert the neighbor into the priority queue based on its heuristic value.
+
+Step 4: Main Execution
+Build the graph.
+
+Input the start node and goal node.
+
+Run the Best First Search algorithm.
+
