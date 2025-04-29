@@ -1,0 +1,42 @@
+graph.csv
+source,destination
+A,B
+A,C
+B,D
+C,D
+C,E
+
+import pandas as pd
+from collections import defaultdict
+
+# Step 1: Read the graph from a CSV file
+def read_graph_from_csv(file_path):
+    df = pd.read_csv(file_path)
+    graph = defaultdict(list)
+    
+    for _, row in df.iterrows():
+        u, v = row['source'], row['destination']
+        # Since the graph is undirected, add both connections
+        graph[u].append(v)
+        graph[v].append(u)
+    
+    return graph
+
+# Step 2: Recursive DFS implementation
+def dfs_recursive(graph, node, visited=None):
+    if visited is None:
+        visited = set()
+    visited.add(node)
+    print(node, end=' ')  # Process the node (you can store instead if needed)
+    
+    for neighbor in graph[node]:
+        if neighbor not in visited:
+            dfs_recursive(graph, neighbor, visited)
+
+# Step 3: Run DFS on the graph
+file_path = 'graph.csv'  # Make sure this file is in your working directory
+graph = read_graph_from_csv(file_path)
+print("Graph:", dict(graph))
+
+print("\nDFS Traversal starting from node A:")
+dfs_recursive(graph, 'A')
